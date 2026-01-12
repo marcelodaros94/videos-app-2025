@@ -62,7 +62,7 @@ const App = () => {
         </Fab>
       </Box>
 
-      <h1>Stream Wrestling</h1>
+      <h1 style={{ marginLeft: 16 }}>Stream Wrestling</h1>
 
       {/* Routes */}
       <Routes>

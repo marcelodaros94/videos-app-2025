@@ -5,6 +5,13 @@ import { useVideoSearch } from "../hooks/useVideoSearch";
 import { mapApiVideoToSource } from "../utils/videoMapper";
 import { VideoCard } from "../components/VideoCard";
 
+import {
+  Container,
+  Box,
+  Typography,
+  Button,
+} from "@mui/material";
+
 const VideoSearchPage = () => {
   const [query, setQuery] = useState("");
   const { results, loading, loadMore, hasMore } = useVideoSearch(query);
@@ -23,7 +30,6 @@ const VideoSearchPage = () => {
     });
   };
 
-  // 👉 Scroll automático al player
   useEffect(() => {
     if (currentIndex !== null) {
       playerRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -31,35 +37,48 @@ const VideoSearchPage = () => {
   }, [currentIndex]);
 
   return (
-    <div className="space-y-6">
-      <SearchBar onSearch={setQuery} />
+    <Container maxWidth="lg">
+      <Box my={4}>
+        <SearchBar onSearch={setQuery} />
+      </Box>
 
-      <div ref={playerRef}>
+      <Box ref={playerRef} mb={4}>
         {currentVideo && (
           <VideoPlayer source={currentVideo} onEnded={handleEnded} />
         )}
-      </div>
+      </Box>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: {
+            xs: "1fr",
+            sm: "repeat(2, 1fr)",
+            md: "repeat(3, 1fr)",
+            lg: "repeat(4, 1fr)",
+          },
+          gap: 2,
+        }}
+      >
         {results.map((video) => (
-          <VideoCard
-            key={video._id}
-            video={video}
-          />
+          <VideoCard key={video._id} video={video} />
         ))}
-      </div>
+      </Box>
 
-      {loading && <p className="text-center">Loading...</p>}
+      {loading && (
+        <Typography align="center" mt={4}>
+          Loading...
+        </Typography>
+      )}
 
       {hasMore && !loading && (
-        <button
-          onClick={loadMore}
-          className="mx-auto block px-6 py-2 rounded bg-black text-white"
-        >
-          Load more
-        </button>
+        <Box display="flex" justifyContent="center" mt={4}>
+          <Button variant="contained" onClick={loadMore}>
+            Load more
+          </Button>
+        </Box>
       )}
-    </div>
+    </Container>
   );
 };
 

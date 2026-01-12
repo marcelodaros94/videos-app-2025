@@ -1,4 +1,10 @@
-import { Card, CardMedia, Box } from "@mui/material";
+import {
+  Card,
+  CardMedia,
+  CardContent,
+  Box,
+  Typography,
+} from "@mui/material";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import { useNavigate } from "react-router-dom";
 import { useVideoStore } from "../stores/videoStore";
@@ -16,42 +22,71 @@ export const VideoCard = ({ video }: { video: any }) => {
     <Card
       onClick={handleClick}
       sx={{
+        background: "black",
         cursor: "pointer",
-        position: "relative",
+        overflow: "hidden",
         "&:hover .overlay": { opacity: 1 },
       }}
     >
-      <CardMedia
-        component="img"
-        height="180"
-        image={video.thumbnail}
-        alt={video.title}
-      />
-
-      {/* Overlay */}
-      <Box
-        className="overlay"
-        sx={{
-          position: "absolute",
-          inset: 0,
-          bgcolor: "rgba(0,0,0,0.45)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          opacity: 0,
-          transition: "opacity .2s",
-        }}
-      >
-        <Box
+      {/* Thumbnail */}
+      <Box sx={{ position: "relative" }}>
+        <CardMedia
+          component="img"
+          image={video.thumbnail}
+          alt={video.title}
           sx={{
-            bgcolor: "white",
-            borderRadius: "50%",
-            p: 2,
+            height: 180,
+            objectFit: "cover",
+          }}
+        />
+
+        {/* Overlay */}
+        <Box
+          className="overlay"
+          sx={{
+            position: "absolute",
+            inset: 0,
+            bgcolor: "rgba(0,0,0,0.45)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            opacity: 0,
+            transition: "opacity .2s ease-in-out",
           }}
         >
-          <PlayArrowIcon sx={{ fontSize: 40, color: "black" }} />
+          <Box
+            sx={{
+              bgcolor: "white",
+              borderRadius: "50%",
+              p: 1.5,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <PlayArrowIcon sx={{ fontSize: 42, color: "black" }} />
+          </Box>
         </Box>
       </Box>
+
+      {/* Title */}
+      <CardContent sx={{ py: 1.5, background: "black" }}>
+        <Typography
+          variant="subtitle1"
+          fontWeight={600}
+          lineHeight={1.3}
+          sx={{
+            color: "white",
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+          }}
+        >
+          {video.title}
+        </Typography>
+        
+      </CardContent>
     </Card>
   );
 };
