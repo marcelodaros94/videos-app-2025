@@ -38,6 +38,8 @@ import VideoDetailPage from "./pages/VideoDetailPage";
 import { Fab, Box } from "@mui/material";
 import VolunteerActivismIcon from "@mui/icons-material/VolunteerActivism";
 
+import "./App.css";
+
 const App = () => {
   return (
     <>

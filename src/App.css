@@ -40,3 +40,14 @@
 .read-the-docs {
   color: #888;
 }
+
+/* =========================
+   DAILYMOTION PLAYER
+   ========================= */
+/* 🖥️ Desktop */
+@media (min-width: 900px) {
+  .dm-player {
+    height: 70vh;
+  }
+}
+

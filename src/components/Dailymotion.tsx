@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface DailymotionProps {
   videoId: string;
@@ -7,6 +7,7 @@ interface DailymotionProps {
 }
 
 const DailymotionPlayer = ({ videoId, startAt, onEnded }: DailymotionProps) => {
+  const [showNotice, setShowNotice] = useState(true);
   const baseUrl = `https://www.dailymotion.com/embed/video/${videoId}`;
   
   // Agregamos el parámetro api=postMessage para que el iframe nos envíe eventos
@@ -17,6 +18,14 @@ const DailymotionPlayer = ({ videoId, startAt, onEnded }: DailymotionProps) => {
     api: "postMessage", 
     origin: window.location.origin // Le decimos a DM a dónde enviar los mensajes
   });
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowNotice(false);
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
@@ -42,7 +51,12 @@ const DailymotionPlayer = ({ videoId, startAt, onEnded }: DailymotionProps) => {
   }, [onEnded]);
 
   return (
-    <div style={{ width: "100%", aspectRatio: "16/9", backgroundColor: "#000" }}>
+    <div className="dm-player" style={{ width: "100%", aspectRatio: "16/9", backgroundColor: "#000" }}>
+      {showNotice && (
+        <div className="dm-notice">
+          ℹ️ Este video es de Dailymotion. Ante cualquier inestabilidad, intentar luego...
+        </div>
+      )}
       <iframe
         src={`${baseUrl}?${params.toString()}`}
         width="100%"
