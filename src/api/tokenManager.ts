@@ -1,13 +1,24 @@
 import { getAuthToken } from "./authApi";
 
-const TOKEN_EXPIRATION = import.meta.env.VITE_API_KEY;
+const configuredTtlMinutes = Number(import.meta.env.VITE_TOKEN_TTL_MINUTES);
+const TOKEN_TTL_MS =
+  (Number.isFinite(configuredTtlMinutes) && configuredTtlMinutes > 0
+    ? configuredTtlMinutes
+    : 55) *
+  60 *
+  1000;
 
 const TOKEN_KEY = "videos_api_token";
 const EXPIRES_AT_KEY = "videos_api_expires_at";
 
 let inMemoryToken: string | null = null;
-let isFetchingToken = false;
-let pendingRequests: ((token: string) => void)[] = [];
+let tokenRequest: Promise<string> | null = null;
+
+export const clearAuthToken = () => {
+  inMemoryToken = null;
+  localStorage.removeItem(TOKEN_KEY);
+  localStorage.removeItem(EXPIRES_AT_KEY);
+};
 
 export const getValidToken = async (): Promise<string> => {
   // 1️⃣ In-memory
@@ -23,26 +34,21 @@ export const getValidToken = async (): Promise<string> => {
   }
 
   // 3️⃣ Evitar múltiples requests simultáneas
-  if (isFetchingToken) {
-    return new Promise((resolve) => {
-      pendingRequests.push(resolve);
-    });
+  if (!tokenRequest) {
+    tokenRequest = getAuthToken()
+      .then(({ accessToken }) => {
+        const expiresAtMs = Date.now() + TOKEN_TTL_MS;
+
+        localStorage.setItem(TOKEN_KEY, accessToken);
+        localStorage.setItem(EXPIRES_AT_KEY, expiresAtMs.toString());
+        inMemoryToken = accessToken;
+
+        return accessToken;
+      })
+      .finally(() => {
+        tokenRequest = null;
+      });
   }
 
-  isFetchingToken = true;
-
-  const { accessToken } = await getAuthToken();
-
-  const expiresAtMs = Date.now() + TOKEN_EXPIRATION * 60 * 1000;
-
-  localStorage.setItem(TOKEN_KEY, accessToken);
-  localStorage.setItem(EXPIRES_AT_KEY, expiresAtMs.toString());
-
-  inMemoryToken = accessToken;
-  isFetchingToken = false;
-
-  pendingRequests.forEach((cb) => cb(accessToken));
-  pendingRequests = [];
-
-  return accessToken;
+  return tokenRequest;
 };

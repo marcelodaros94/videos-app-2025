@@ -1,4 +1,4 @@
-import { getValidToken } from "./tokenManager";
+import { clearAuthToken, getValidToken } from "./tokenManager";
 
 export const fetchWithAuth = async (
   input: RequestInfo,
@@ -16,7 +16,7 @@ export const fetchWithAuth = async (
 
   // 🔁 Token inválido → reintenta
   if (res.status === 401) {
-    localStorage.clear();
+    clearAuthToken();
     const newToken = await getValidToken();
 
     return fetch(input, {
