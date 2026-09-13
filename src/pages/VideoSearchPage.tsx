@@ -10,11 +10,12 @@ import {
   Box,
   Typography,
   Button,
+  Alert,
 } from "@mui/material";
 
 const VideoSearchPage = () => {
   const [query, setQuery] = useState("");
-  const { results, loading, loadMore, hasMore } = useVideoSearch(query);
+  const { results, loading, loadMore, hasMore, error } = useVideoSearch(query);
 
   const [currentIndex, setCurrentIndex] = useState<number | null>(null);
   const playerRef = useRef<HTMLDivElement>(null);
@@ -41,6 +42,12 @@ const VideoSearchPage = () => {
       <Box my={4}>
         <SearchBar onSearch={setQuery} />
       </Box>
+
+      {error && (
+        <Alert severity="warning" sx={{ mb: 3 }}>
+          {error}
+        </Alert>
+      )}
 
       <Box ref={playerRef} mb={4}>
         {currentVideo && (

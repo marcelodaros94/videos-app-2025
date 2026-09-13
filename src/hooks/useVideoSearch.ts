@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { searchVideos } from "../api/videosApi";
+import { searchVideos, VideoSearchError } from "../api/videosApi";
 import { useVideoStore } from "../stores/videoStore";
 
 const SEARCH_DEBOUNCE_MS = 350;
@@ -10,6 +10,7 @@ export const useVideoSearch = (query: string) => {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const requestIdRef = useRef(0);
   const loadedQueryRef = useRef("");
 
@@ -17,6 +18,7 @@ export const useVideoSearch = (query: string) => {
     async (searchQuery: string, requestedPage: number, replaceResults: boolean) => {
       const requestId = ++requestIdRef.current;
       setLoading(true);
+      setError(null);
 
       try {
         const data = await searchVideos({
@@ -41,6 +43,19 @@ export const useVideoSearch = (query: string) => {
         }
 
         setPage(requestedPage);
+      } catch (error) {
+        if (requestId !== requestIdRef.current) return;
+
+        if (error instanceof VideoSearchError && error.status === 429) {
+          const retryAfter = error.retryAfterSeconds;
+          setError(
+            retryAfter
+              ? `Demasiadas búsquedas. Intenta de nuevo en ${retryAfter} segundo(s).`
+              : error.message
+          );
+        } else {
+          setError("No se pudieron cargar los videos. Intenta de nuevo.");
+        }
       } finally {
         if (requestId === requestIdRef.current) {
           setLoading(false);
@@ -62,6 +77,7 @@ export const useVideoSearch = (query: string) => {
       setPage(1);
       setHasMore(false);
       setLoading(false);
+      setError(null);
       return;
     }
 
@@ -79,6 +95,7 @@ export const useVideoSearch = (query: string) => {
   return {
     results,
     loading,
+    error,
     hasMore,
     loadMore: () => {
       const searchQuery = query.trim();

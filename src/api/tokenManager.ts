@@ -4,7 +4,7 @@ const configuredTtlMinutes = Number(import.meta.env.VITE_TOKEN_TTL_MINUTES);
 const TOKEN_TTL_MS =
   (Number.isFinite(configuredTtlMinutes) && configuredTtlMinutes > 0
     ? configuredTtlMinutes
-    : 55) *
+    : 14) *
   60 *
   1000;
 
