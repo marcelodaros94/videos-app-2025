@@ -3,15 +3,20 @@ import { fetchWithAuth } from "./fetchWithAuth";
 const API_URL = import.meta.env.VITE_API_URL;
 
 export class VideoSearchError extends Error {
+  public readonly status: number;
+  public readonly retryAfterSeconds?: number;
+
   constructor(
-    public readonly status: number,
-    public readonly retryAfterSeconds?: number
+    status: number,
+    retryAfterSeconds?: number
   ) {
     super(
       status === 429
         ? "Demasiadas búsquedas. Espera un momento e inténtalo otra vez."
         : "No se pudieron cargar los videos."
     );
+    this.status = status;
+    this.retryAfterSeconds = retryAfterSeconds;
   }
 }
 
