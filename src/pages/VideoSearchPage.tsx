@@ -15,7 +15,11 @@ import {
 
 const VideoSearchPage = () => {
   const [query, setQuery] = useState("");
-  const { results, loading, loadMore, hasMore, error } = useVideoSearch(query);
+  const [company, setCompany] = useState("");
+  const { results, loading, loadMore, hasMore, error } = useVideoSearch(
+    query,
+    company
+  );
 
   const [currentIndex, setCurrentIndex] = useState<number | null>(null);
   const playerRef = useRef<HTMLDivElement>(null);
@@ -40,7 +44,7 @@ const VideoSearchPage = () => {
   return (
     <Container maxWidth="lg">
       <Box my={4}>
-        <SearchBar onSearch={setQuery} />
+        <SearchBar onSearch={setQuery} onCompanyChange={setCompany} />
       </Box>
 
       {error && (

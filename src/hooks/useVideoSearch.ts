@@ -4,7 +4,7 @@ import { useVideoStore } from "../stores/videoStore";
 
 const SEARCH_DEBOUNCE_MS = 350;
 
-export const useVideoSearch = (query: string) => {
+export const useVideoSearch = (query: string, company: string) => {
   const { results, setResults, appendResults } = useVideoStore();
 
   const [page, setPage] = useState(1);
@@ -12,10 +12,15 @@ export const useVideoSearch = (query: string) => {
   const [hasMore, setHasMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const requestIdRef = useRef(0);
-  const loadedQueryRef = useRef("");
+  const loadedSearchRef = useRef("");
 
   const requestPage = useCallback(
-    async (searchQuery: string, requestedPage: number, replaceResults: boolean) => {
+    async (
+      searchQuery: string,
+      selectedCompany: string,
+      requestedPage: number,
+      replaceResults: boolean
+    ) => {
       const requestId = ++requestIdRef.current;
       setLoading(true);
       setError(null);
@@ -23,6 +28,7 @@ export const useVideoSearch = (query: string) => {
       try {
         const data = await searchVideos({
           q: searchQuery,
+          company: selectedCompany || undefined,
           page: requestedPage,
           limit: 12,
         });
@@ -37,7 +43,7 @@ export const useVideoSearch = (query: string) => {
 
         if (replaceResults) {
           setResults(data);
-          loadedQueryRef.current = searchQuery;
+          loadedSearchRef.current = `${searchQuery}\u0000${selectedCompany}`;
         } else {
           appendResults(data);
         }
@@ -67,12 +73,13 @@ export const useVideoSearch = (query: string) => {
 
   useEffect(() => {
     const searchQuery = query.trim();
+    const selectedCompany = company.trim();
 
     // Invalidate a prior response before queuing a request for this query.
     requestIdRef.current += 1;
-    loadedQueryRef.current = "";
+    loadedSearchRef.current = "";
 
-    if (!searchQuery) {
+    if (!searchQuery && !selectedCompany) {
       setResults([]);
       setPage(1);
       setHasMore(false);
@@ -86,11 +93,11 @@ export const useVideoSearch = (query: string) => {
     setHasMore(true);
 
     const debounceTimer = window.setTimeout(() => {
-      void requestPage(searchQuery, 1, true);
+      void requestPage(searchQuery, selectedCompany, 1, true);
     }, SEARCH_DEBOUNCE_MS);
 
     return () => window.clearTimeout(debounceTimer);
-  }, [query, requestPage, setResults]);
+  }, [company, query, requestPage, setResults]);
 
   return {
     results,
@@ -99,17 +106,19 @@ export const useVideoSearch = (query: string) => {
     hasMore,
     loadMore: () => {
       const searchQuery = query.trim();
+      const selectedCompany = company.trim();
+      const searchKey = `${searchQuery}\u0000${selectedCompany}`;
 
       if (
         loading ||
         !hasMore ||
-        !searchQuery ||
-        loadedQueryRef.current !== searchQuery
+        (!searchQuery && !selectedCompany) ||
+        loadedSearchRef.current !== searchKey
       ) {
         return;
       }
 
-      void requestPage(searchQuery, page + 1, false);
+      void requestPage(searchQuery, selectedCompany, page + 1, false);
     },
   };
 };

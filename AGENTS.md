@@ -36,7 +36,7 @@ Las variables Vite necesarias viven en `.env` (ignorado por Git; no registrar va
 
 - `VITE_API_URL`: URL base del backend. El código concatena rutas como `${VITE_API_URL}auth/token`, por lo que normalmente debe terminar en `/`.
 - `VITE_API_KEY`: clave enviada en el encabezado `x-api-key` para obtener un token.
-- `VITE_TOKEN_TTL_MINUTES` (opcional): duración del token en minutos; por defecto se asumen 14 minutos para renovar antes de que venza el JWT de 15 minutos.
+- `VITE_TOKEN_TTL_MINUTES` (opcional): duración del token en minutos; por defecto se asumen 55 minutos.
 
 Secuencia de una búsqueda:
 

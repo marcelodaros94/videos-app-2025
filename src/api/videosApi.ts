@@ -22,10 +22,12 @@ export class VideoSearchError extends Error {
 
 export const searchVideos = async ({
   q,
+  company,
   page = 1,
   limit = 12,
 }: {
   q: string;
+  company?: string;
   page?: number;
   limit?: number;
 }) => {
@@ -34,6 +36,8 @@ export const searchVideos = async ({
     page: page.toString(),
     limit: limit.toString(),
   });
+
+  if (company) params.set("company", company);
 
   const res = await fetchWithAuth(`${API_URL}videos/search?${params}`);
 
