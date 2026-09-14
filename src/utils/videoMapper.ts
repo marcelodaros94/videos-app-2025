@@ -12,13 +12,23 @@ export const mapApiVideoToSource = (video: any): VideoSource => {
   }
 
   if (video.provider.toLowerCase() === "dailymotion") {
-    const parts = video.url.split("/video/");
-    const videoId = parts[1];
+    const url = new URL(video.url);
+    const videoId = url.pathname.split("/video/")[1];
+    const rawStartAt = url.searchParams.get("start") ?? url.searchParams.get("startTime");
+    const startAt = rawStartAt === null ? undefined : Number(rawStartAt);
 
-    return {
+    if (!videoId || (startAt !== undefined && !Number.isFinite(startAt))) {
+      throw new Error("Invalid Dailymotion URL");
+    }
+
+    const source: VideoSource = {
       provider: "dailymotion",
       videoId,
     };
+
+    if (startAt !== undefined) source.startAt = Math.max(0, startAt);
+
+    return source;
   }
 
   throw new Error("Unsupported provider");
