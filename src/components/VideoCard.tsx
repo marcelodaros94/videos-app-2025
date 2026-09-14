@@ -9,10 +9,23 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import { useNavigate } from "react-router-dom";
 import { useVideoStore } from "../stores/videoStore";
 
+const companyHeaderColors: Record<string, string> = {
+  WWE: "#7A1E22",
+  AEW: "#8A6500",
+  NJPW: "#9B1C31",
+  Stardom: "#8C255C",
+  AAA: "#1356A2",
+  TNA: "#283593",
+  CMLL: "#006B4F",
+  ROH: "#4B5563",
+  "Other Promotions": "#5B3B12",
+};
+
 export const VideoCard = ({ video }: { video: any }) => {
   const navigate = useNavigate();
   const selectVideo = useVideoStore((s) => s.selectVideo);
   const showAndYear = video.show && video.year ? `${video.show} (${video.year})` : null;
+  const headerColor = companyHeaderColors[video.company] ?? "#24204D";
 
   const handleClick = () => {
     selectVideo(video);
@@ -75,11 +88,14 @@ export const VideoCard = ({ video }: { video: any }) => {
 
       <CardContent
         sx={{
-          py: 1.5,
+          p: 1.5,
+          "&:last-child": { pb: 1.5 },
           background: "black",
-          minHeight: 88,
+          height: 108,
+          boxSizing: "border-box",
           display: "flex",
           flexDirection: "column",
+          overflow: "hidden",
         }}
       >
         <Typography
@@ -92,24 +108,36 @@ export const VideoCard = ({ video }: { video: any }) => {
             WebkitLineClamp: 2,
             WebkitBoxOrient: "vertical",
             overflow: "hidden",
-            minHeight: "2.6em",
           }}
         >
           {video.title}
         </Typography>
 
-        {showAndYear ? (
-          <Typography
-            variant="body2"
-            noWrap
-            title={showAndYear}
-            sx={{ color: "grey.400", mt: 0.5 }}
+        {showAndYear && (
+          <Box
+            sx={{
+              height: 36,
+              mx: -1.5,
+              mt: 0.75,
+              px: 2,
+              display: "flex",
+              alignItems: "center",
+              boxSizing: "border-box",
+              bgcolor: headerColor,
+            }}
           >
-            {showAndYear}
-          </Typography>
-        ) : (
-          <Box sx={{ minHeight: "1.5em", mt: 0.5 }} />
+            <Typography
+              variant="body2"
+              noWrap
+              title={showAndYear}
+              sx={{ color: "white", fontWeight: 500 }}
+            >
+              {showAndYear}
+            </Typography>
+          </Box>
         )}
+
+        <Box sx={{ flexGrow: 1 }} />
       </CardContent>
     </Card>
   );
