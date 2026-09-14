@@ -24,8 +24,16 @@ const companyHeaderColors: Record<string, string> = {
 export const VideoCard = ({ video }: { video: any }) => {
   const navigate = useNavigate();
   const selectVideo = useVideoStore((s) => s.selectVideo);
-  const showAndYear = video.show && video.year ? `${video.show} (${video.year})` : null;
-  const headerColor = companyHeaderColors[video.company] ?? "#24204D";
+  const show = typeof video.show === "string" ? video.show.trim() : "";
+  const year = video.year ? String(video.year) : "";
+  const metadataLabel = show
+    ? year
+      ? `${show} (${year})`
+      : show
+    : year
+      ? `(${year})`
+      : video.company || null;
+  const headerColor = companyHeaderColors[video.company] ?? "#5B3B12";
 
   const handleClick = () => {
     selectVideo(video);
@@ -36,7 +44,7 @@ export const VideoCard = ({ video }: { video: any }) => {
     <Card
       onClick={handleClick}
       sx={{
-        background: "black",
+        background: "#0A0D12",
         cursor: "pointer",
         overflow: "hidden",
         height: "100%",
@@ -90,7 +98,7 @@ export const VideoCard = ({ video }: { video: any }) => {
         sx={{
           p: 1.5,
           "&:last-child": { pb: 1.5 },
-          background: "black",
+          background: "rgba(18, 24, 32, 0.96)",
           height: 108,
           boxSizing: "border-box",
           display: "flex",
@@ -108,12 +116,13 @@ export const VideoCard = ({ video }: { video: any }) => {
             WebkitLineClamp: 2,
             WebkitBoxOrient: "vertical",
             overflow: "hidden",
+            minHeight: "2.6em",
           }}
         >
           {video.title}
         </Typography>
 
-        {showAndYear && (
+        {metadataLabel && (
           <Box
             sx={{
               height: 36,
@@ -122,6 +131,7 @@ export const VideoCard = ({ video }: { video: any }) => {
               px: 2,
               display: "flex",
               alignItems: "center",
+              justifyContent: "center",
               boxSizing: "border-box",
               bgcolor: headerColor,
             }}
@@ -129,10 +139,10 @@ export const VideoCard = ({ video }: { video: any }) => {
             <Typography
               variant="body2"
               noWrap
-              title={showAndYear}
-              sx={{ color: "white", fontWeight: 500 }}
+              title={metadataLabel}
+              sx={{ color: "white", fontWeight: 500, textAlign: "center" }}
             >
-              {showAndYear}
+              {metadataLabel}
             </Typography>
           </Box>
         )}
