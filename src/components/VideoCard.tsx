@@ -12,6 +12,7 @@ import { useVideoStore } from "../stores/videoStore";
 export const VideoCard = ({ video }: { video: any }) => {
   const navigate = useNavigate();
   const selectVideo = useVideoStore((s) => s.selectVideo);
+  const showAndYear = video.show && video.year ? `${video.show} (${video.year})` : null;
 
   const handleClick = () => {
     selectVideo(video);
@@ -25,6 +26,9 @@ export const VideoCard = ({ video }: { video: any }) => {
         background: "black",
         cursor: "pointer",
         overflow: "hidden",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
         "&:hover .overlay": { opacity: 1 },
       }}
     >
@@ -69,8 +73,15 @@ export const VideoCard = ({ video }: { video: any }) => {
         </Box>
       </Box>
 
-      {/* Title */}
-      <CardContent sx={{ py: 1.5, background: "black" }}>
+      <CardContent
+        sx={{
+          py: 1.5,
+          background: "black",
+          minHeight: 88,
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
         <Typography
           variant="subtitle1"
           fontWeight={600}
@@ -81,11 +92,24 @@ export const VideoCard = ({ video }: { video: any }) => {
             WebkitLineClamp: 2,
             WebkitBoxOrient: "vertical",
             overflow: "hidden",
+            minHeight: "2.6em",
           }}
         >
           {video.title}
         </Typography>
-        
+
+        {showAndYear ? (
+          <Typography
+            variant="body2"
+            noWrap
+            title={showAndYear}
+            sx={{ color: "grey.400", mt: 0.5 }}
+          >
+            {showAndYear}
+          </Typography>
+        ) : (
+          <Box sx={{ minHeight: "1.5em", mt: 0.5 }} />
+        )}
       </CardContent>
     </Card>
   );
