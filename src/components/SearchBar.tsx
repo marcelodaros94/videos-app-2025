@@ -50,16 +50,16 @@ const SearchBar = ({ onSearch, onCompanyChange }: SearchBarProps) => {
     <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
       <TextField
         fullWidth
-        label="Buscar"
-        placeholder="Buscar video"
+        label="Search"
+        placeholder="Search videos"
         onChange={(event) => onSearch(event.target.value)}
         sx={fieldSx}
       />
       <FormControl sx={{ minWidth: { sm: 190 }, ...fieldSx }}>
-        <InputLabel id="company-filter-label">Empresa</InputLabel>
+        <InputLabel id="company-filter-label">Company</InputLabel>
         <Select
           labelId="company-filter-label"
-          label="Empresa"
+          label="Company"
           defaultValue=""
           onChange={handleCompanyChange}
           MenuProps={{
@@ -68,7 +68,7 @@ const SearchBar = ({ onSearch, onCompanyChange }: SearchBarProps) => {
             },
           }}
         >
-          <MenuItem value="">Todas las empresas</MenuItem>
+          <MenuItem value="">All companies</MenuItem>
           {companies.map((company) => (
             <MenuItem key={company} value={company}>
               {company}

@@ -20,7 +20,7 @@
 | --- | --- |
 | `src/main.tsx` | Arranque React, `StrictMode` y `BrowserRouter`. |
 | `src/App.tsx` | Cabecera, botón de donación y definición efectiva de rutas. |
-| `src/pages/VideoSearchPage.tsx` | Búsqueda, grilla de resultados, paginación manual y reproducción en la misma página. |
+| `src/pages/VideoSearchPage.tsx` | Búsqueda, grilla de resultados, paginación manual y reproducción en la misma página. Carga inicialmente `q=a` sin mostrarlo en el campo. |
 | `src/pages/VideoDetailPage.tsx` | Reproductor y metadatos del video seleccionado. |
 | `src/api/` | Cliente HTTP, autenticación y caché de token. |
 | `src/hooks/useVideoSearch.ts` | Orquesta las búsquedas paginadas. |

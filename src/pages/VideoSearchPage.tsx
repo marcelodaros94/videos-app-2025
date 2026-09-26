@@ -13,11 +13,13 @@ import {
   Alert,
 } from "@mui/material";
 
+const DEFAULT_SEARCH_QUERY = "a";
+
 const VideoSearchPage = () => {
   const [query, setQuery] = useState("");
   const [company, setCompany] = useState("");
   const { results, loading, loadMore, hasMore, error } = useVideoSearch(
-    query,
+    query || DEFAULT_SEARCH_QUERY,
     company
   );
 

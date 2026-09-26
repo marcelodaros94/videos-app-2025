@@ -18,9 +18,15 @@ const VideoDetailPage = () => {
     <div className="max-w-5xl mx-auto space-y-6" style={{ marginLeft: "16px", marginRight: "16px"}}>
       {/* Botón volver */}
       <button
+        type="button"
         onClick={() => navigate("/")}
         className="text-sm text-blue-600 hover:underline block"
-        style={{ display: "block" }}
+        style={{
+          display: "block",
+          backgroundColor: "#ffffff",
+          color: "#0b57d0",
+          border: "1px solid #0b57d0",
+        }}
       >
         ← Back to search
       </button>
