@@ -6,6 +6,7 @@ import {
   Typography,
 } from "@mui/material";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useNavigate } from "react-router-dom";
 import { useVideoStore } from "../stores/videoStore";
 
@@ -34,6 +35,7 @@ export const VideoCard = ({ video }: { video: any }) => {
       ? `(${year})`
       : video.company || null;
   const headerColor = companyHeaderColors[video.company] ?? "#5B3B12";
+  const isDailymotion = video.provider?.toLowerCase() === "dailymotion";
 
   const handleClick = () => {
     selectVideo(video);
@@ -42,15 +44,17 @@ export const VideoCard = ({ video }: { video: any }) => {
 
   return (
     <Card
-      onClick={handleClick}
+      onClick={isDailymotion ? undefined : handleClick}
+      aria-disabled={isDailymotion}
       sx={{
         background: "#0A0D12",
-        cursor: "pointer",
+        cursor: isDailymotion ? "not-allowed" : "pointer",
         overflow: "hidden",
         height: "100%",
+        position: "relative",
         display: "flex",
         flexDirection: "column",
-        "&:hover .overlay": { opacity: 1 },
+        "&:hover .overlay": isDailymotion ? {} : { opacity: 1 },
       }}
     >
       {/* Thumbnail */}
@@ -149,6 +153,31 @@ export const VideoCard = ({ video }: { video: any }) => {
 
         <Box sx={{ flexGrow: 1 }} />
       </CardContent>
+
+      {isDailymotion && (
+        <Box
+          sx={{
+            position: "absolute",
+            inset: 0,
+            zIndex: 2,
+            bgcolor: "rgba(34, 39, 47, 0.82)",
+            color: "rgba(255, 255, 255, 0.92)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 1,
+            textAlign: "center",
+            px: 2,
+            pointerEvents: "auto",
+          }}
+        >
+          <LockOutlinedIcon fontSize="large" />
+          <Typography variant="body2" fontWeight={600}>
+            Dailymotion no disponible por ahora
+          </Typography>
+        </Box>
+      )}
     </Card>
   );
 };
